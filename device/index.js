@@ -151,7 +151,7 @@ function prepareWebSocketUrl(options, awsAccessId, awsSecretKey, awsSTSToken) {
       '&X-Amz-SignedHeaders=host';
    var hostName = options.host;
 
-   // Include the port number in the hostname if it's not 
+   // Include the port number in the hostname if it's not
    // the standard wss port (443).
    //
    if (!isUndefined(options.port) && options.port !== 443) {
@@ -165,7 +165,7 @@ function prepareWebSocketCustomAuthUrl(options) {
    var path = '/mqtt';
    var hostName = options.host;
 
-   // Include the port number in the hostname if it's not 
+   // Include the port number in the hostname if it's not
    // the standard wss port (443).
    //
    if (!isUndefined(options.port) && options.port !== 443) {
@@ -243,23 +243,23 @@ function DeviceClient(options) {
    //
    //    +- - - - - - - - - - - - - - - - - - - - - - - - +
    //    |                                                |
-   //                                                      
-   //    |                    FILLING                     |         
-   //                                                      
+   //
+   //    |                    FILLING                     |
+   //
    //    |                                                |
-   //              +-----------------------------+         
+   //              +-----------------------------+
    //    |         |                             |        |
-   //              |                             |         
+   //              |                             |
    //    |         v                             |        |
    //    +- - Established                     Inactive - -+
    //    |         |                             ^        |
-   //              |                             |         
+   //              |                             |
    //    |         |                             |        |
-   //              +----------> Stable ----------+        
+   //              +----------> Stable ----------+
    //    |                                                |
-   //                                                      
-   //    |                     DRAINING                   |         
-   //                                                      
+   //
+   //    |                     DRAINING                   |
+   //
    //    |                                                |
    //    +- - - - - - - - - - - - - - - - - - - - - - - - +
    //
@@ -268,7 +268,7 @@ function DeviceClient(options) {
    //
    // During draining, existing subscriptions are re-sent,
    // followed by any publishes which occurred while offline.
-   //    
+   //
 
    //
    // Publish cache used during filling
@@ -314,23 +314,23 @@ function DeviceClient(options) {
    //Default keep alive time interval in seconds.
    var defaultKeepalive = 300;
    //
-   // These properties control the reconnect behavior of the MQTT Client.  If 
-   // the MQTT client becomes disconnected, it will attempt to reconnect after 
+   // These properties control the reconnect behavior of the MQTT Client.  If
+   // the MQTT client becomes disconnected, it will attempt to reconnect after
    // a quiet period; this quiet period doubles with each reconnection attempt,
-   // e.g. 1 seconds, 2 seconds, 2, 8, 16, 32, etc... up until a maximum 
+   // e.g. 1 seconds, 2 seconds, 2, 8, 16, 32, etc... up until a maximum
    // reconnection time is reached.
    //
-   // If a connection is active for the minimum connection time, the quiet 
+   // If a connection is active for the minimum connection time, the quiet
    // period is reset to the initial value.
    //
-   // baseReconnectTime: the time in seconds to wait before the first 
+   // baseReconnectTime: the time in seconds to wait before the first
    //     reconnect attempt
    //
-   // minimumConnectionTime: the time in seconds that a connection must be 
-   //     active before resetting the current reconnection time to the base 
+   // minimumConnectionTime: the time in seconds that a connection must be
+   //     active before resetting the current reconnection time to the base
    //     reconnection time
    //
-   // maximumReconnectTime: the maximum time in seconds to wait between 
+   // maximumReconnectTime: the maximum time in seconds to wait between
    //     reconnect attempts
    //
    // The defaults for these values are:
@@ -457,8 +457,8 @@ function DeviceClient(options) {
    } else if (options.protocol === 'wss' || options.protocol === 'wss-custom-auth') {
       if (options.protocol === 'wss') {
          //
-         // AWS access id and secret key 
-         // It first check Input options and Environment variables 
+         // AWS access id and secret key
+         // It first check Input options and Environment variables
          // If that not available, it will try to load credentials from default credential file
          if (!isUndefined(options.accessKeyId)) {
             awsAccessId = options.accessKeyId;
@@ -532,7 +532,7 @@ function DeviceClient(options) {
       if (options.protocol === 'wss-custom-auth') {
          options.websocketOptions.headers = options.customAuthHeaders;
       }
-   } 
+   }
 
    if ((!isUndefined(options)) && (options.debug === true)) {
       console.log(options);
@@ -546,7 +546,7 @@ function DeviceClient(options) {
 
    function _loadDefaultFilename() {
       var home = process.env.HOME ||
-           process.env.USERPROFILE || 
+           process.env.USERPROFILE ||
            (process.env.HOMEPATH ? ((process.env.HOMEDRIVE || 'C:/') + process.env.HOMEPATH) : null);
       return path.join(home, '.aws', 'credentials');
 
@@ -578,7 +578,7 @@ function DeviceClient(options) {
 
       //
       // Don't cache subscriptions if auto-resubscribe is disabled
-      // 
+      //
       if (autoResubscribe === false) {
          return;
       }
@@ -600,7 +600,7 @@ function DeviceClient(options) {
    }
 
    //
-   // Return true if the connection is currently in a 'filling' 
+   // Return true if the connection is currently in a 'filling'
    // state
    //
    function _filling() {
@@ -612,7 +612,7 @@ function DeviceClient(options) {
       if (protocol === 'wss') {
          var url;
          //
-         // If the access id and secret key are available, prepare the URL. 
+         // If the access id and secret key are available, prepare the URL.
          // Otherwise, set the url to an invalid value.
          //
          if (awsAccessId === '' || awsSecretKey === '') {
@@ -639,11 +639,16 @@ function DeviceClient(options) {
 
    var device = new mqtt.MqttClient(_wrapper, options);
 
+   this.reconnect = function() {
+      console.log('In exposed reconnect() - (device).');
+      device.reconnect();
+   };
+
    //handle events from the mqtt client
 
    //
    // Timeout expiry function for the connection timer; once a connection
-   // is stable, reset the current reconnection time to the base value. 
+   // is stable, reset the current reconnection time to the base value.
    //
    function _markConnectionStable() {
       currentReconnectTimeMs = baseReconnectTimeMs;
@@ -687,7 +692,7 @@ function DeviceClient(options) {
       // copy of the array.  We shift them out one-by-one until
       // all have been processed, leaving the official record
       // of active subscriptions untouched.
-      // 
+      //
       var subscription = clonedSubscriptions.shift();
 
       if (!isUndefined(subscription)) {
@@ -758,7 +763,7 @@ function DeviceClient(options) {
       }
       connectionState = 'established';
       //
-      // If not already running, start the draining timer and 
+      // If not already running, start the draining timer and
       // clone the active subscriptions.
       //
       if (drainingTimer === null) {
@@ -795,7 +800,7 @@ function DeviceClient(options) {
       //
       // Update the current reconnect timeout; this will be the
       // next timeout value used if this connect attempt fails.
-      // 
+      //
       currentReconnectTimeMs = currentReconnectTimeMs * 2;
       currentReconnectTimeMs = Math.min(maximumReconnectTimeMs, currentReconnectTimeMs);
       device.options.reconnectPeriod = currentReconnectTimeMs;
@@ -823,7 +828,7 @@ function DeviceClient(options) {
    //
    this.publish = function(topic, message, options, callback) {
       //
-      // If filling or still draining, push this publish operation 
+      // If filling or still draining, push this publish operation
       // into the offline operations queue; otherwise, perform it
       // immediately.
       //
@@ -854,7 +859,7 @@ function DeviceClient(options) {
             device.subscribe(topics, options, callback);
          } else {
             device.subscribe(topics, options);
-         } 
+         }
       } else {
          // we're offline - queue this subscription request
          if (offlineSubscriptionQueue.length < offlineSubscriptionQueueMaxSize) {
