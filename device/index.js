@@ -640,7 +640,6 @@ function DeviceClient(options) {
    var device = new mqtt.MqttClient(_wrapper, options);
 
    this.reconnect = function() {
-      console.log('In exposed reconnect() - (device).');
       device.reconnect();
    };
 

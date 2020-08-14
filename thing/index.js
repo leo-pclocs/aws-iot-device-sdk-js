@@ -123,7 +123,6 @@ function ThingShadowsClient(deviceOptions, thingShadowOptions) {
    var device = deviceModule.DeviceClient(deviceOptions);
 
    this.reconnect = function() {
-      console.log('In exposed reconnect() - (thing).');
       device.reconnect();
    };
 
